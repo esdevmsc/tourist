@@ -7,14 +7,32 @@ function get_routes(){
   .then(data => {      
       if(data.error === undefined){
         let tbody = document.getElementById('routes_tbody');
+        let tooltips = {};
         data.forEach(function(item, i, data) {          
           let tr = document.createElement('tr');          
           let td_name = document.createElement('td');          
           td_name.innerHTML = item.name;
           let td_description = document.createElement('td');
-          td_description.innerHTML = item.description;
+          if(item.description.length > 150){
+            td_description.innerHTML = item.description.substring(0, 147) + "...";
+            td_description.dataset.bsToggle = "tooltip";
+            td_description.dataset.bsTitle = item.description;
+            new bootstrap.Tooltip(td_description);
+          }
+          else{
+            td_description.innerHTML = item.description;
+          }
+          
           let td_object = document.createElement('td');
-          td_object.innerHTML = item.mainObject;
+          if(item.mainObject.length > 150){
+            td_object.innerHTML = item.mainObject.substring(0, 147) + "...";
+            td_object.dataset.bsToggle = "tooltip";
+            td_object.dataset.bsTitle = item.mainObject;
+            new bootstrap.Tooltip(td_object);
+          }
+          else{
+            td_object.innerHTML = item.mainObject;
+          }
           let td_button = document.createElement('td');
           td_button.innerHTML = '<button class="btn btn-outline-primary btn-sm">Выбрать</button>';
           
@@ -23,7 +41,8 @@ function get_routes(){
           tr.append(td_object);
           tr.append(td_button);
           tbody.append(tr);
-          //console.log(item);
+          
+          console.log(item);
         });        
       }
       else{
