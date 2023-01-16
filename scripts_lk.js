@@ -213,7 +213,8 @@ function click_request_edit(){
 function click_request_delete(){
     let req_id = this.getAttribute("data-id");
     let req = requests[req_id];
-    console.log(req);
+    document.getElementById("delete_sub").dataset.id = req.id;
 }
- 
+
+
 get_routes();
