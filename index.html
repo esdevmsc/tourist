@@ -47,7 +47,7 @@
             <div class="col-md-4">
               <form class="d-flex">
                 <input class="form-control mr-2" type="search" placeholder="Поиск по названию">
-                <button class="btn btn-outline-success" type="submit">Искать</button>
+                <!--<button class="btn btn-outline-success" type="submit">Искать</button>-->
               </form>
             </div>
             <div class="col-md-8">
@@ -83,7 +83,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-12" style="display:none;">
+        <div class="col-md-12" id="guides_list" style="display:none;">
           <h2 class="py-3">Доступные гиды по маршруту <span id="route_name">Название маршрута</span></h2>
           <div class="row py-3">
             <div class="col-md-4">
@@ -118,31 +118,9 @@
                     <th></th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td></td>
-                    <td>ФИО</td>
-                    <td>русский</td>
-                    <td>4 года</td>
-                    <td>1000р.</td>
-                    <td><button class="btn btn-outline-primary btn-sm">Оформить заявку</button></td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>ФИО</td>
-                    <td>русский</td>
-                    <td>4 года</td>
-                    <td>1000р.</td>
-                    <td><button class="btn btn-outline-primary btn-sm">Оформить заявку</button></td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>ФИО</td>
-                    <td>русский</td>
-                    <td>4 года</td>
-                    <td>1000р.</td>
-                    <td><button class="btn btn-outline-primary btn-sm">Оформить заявку</button></td>
-                  </tr>
+                <tbody id="guides_tbody">
+
+
                 </tbody>
               </table>
             </div>

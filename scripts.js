@@ -1,5 +1,6 @@
 let api_key = "159c16ba-5792-4509-b4bb-434c511cd601";
 let routes = {};
+let guides = {};
 let page = 1;
 //Функция получения списка маршрутов, выводим таблицу и запоминаем список (массив routes)
 function get_routes(){
@@ -13,6 +14,7 @@ function get_routes(){
         data.forEach(function(item, i, data) {
           let tr = document.createElement('tr');
           tr.setAttribute('id', 'route_tr_' + i);
+          tr.clasName = "route_tr";
           let td_name = document.createElement('td');
           td_name.innerHTML = item.name;
           let td_description = document.createElement('td');
@@ -37,15 +39,19 @@ function get_routes(){
             td_object.innerHTML = item.mainObject;
           }
           let td_button = document.createElement('td');
-          td_button.innerHTML = '<button id="route_choice_' + i + '" class="btn btn-outline-primary btn-sm">Выбрать</button>';
-          
+          td_button.dataset.id = i;
+          td_button.dataset.server_id = item.id;
+          td_button.innerHTML = '<button class="btn btn-outline-primary btn-sm">Выбрать</button>';
+
+          td_button.addEventListener('click', click_route_button, false);
+
           tr.append(td_name);
           tr.append(td_description);
           tr.append(td_object);
           tr.append(td_button);
           tbody.append(tr);
           
-          console.log(item);
+          //console.log(item);
         });
         pagination();
       }
@@ -94,8 +100,8 @@ function pagination(){
   routes_nav_li_last.innerHTML = '<a class="page-link" href="#">Следующая</a>';
   pagination_block.append(routes_nav_li_last);
 
-  var routes_nav_li_for_click = document.getElementsByClassName("pi_routes");
-  for (var i = 0; i < routes_nav_li_for_click.length; i++) {
+  let routes_nav_li_for_click = document.getElementsByClassName("pi_routes");
+  for (let i = 0; i < routes_nav_li_for_click.length; i++) {
     routes_nav_li_for_click[i].addEventListener('click', click_routes_pagination, false);
   }
 }
@@ -103,9 +109,99 @@ function pagination(){
 //функция смены страницы для списка маршрутов
 function click_routes_pagination(e){
   e.preventDefault();
-  var data_page = this.getAttribute("data-id");
+  let data_page = this.getAttribute("data-id");
   page = Number(data_page);
   pagination();
+}
+
+//функция для кнопки выбора маршрута
+function click_route_button(e){
+  e.preventDefault();
+  let route_trs = document.getElementsByClassName("route_tr");
+  for (let i = 0; i < route_trs.length; i++) {
+    route_trs[i].className = "route_tr";
+  }
+  let id_route = this.getAttribute("data-id");
+  let tr_route = document.getElementById('route_tr_' + id_route);  
+
+  tr_route.className = "route_tr table-warning";
+
+  let server_id = this.getAttribute("data-server_id");
+  get_guides(server_id)
+}
+
+//Функция получения списка гидов, выводим таблицу и запоминаем список (массив guides)
+function get_guides(route_id){
+  let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/routes/" + route_id + "/guides";
+  fetch(url + "?api_key=" + api_key)
+  .then(response => response.json())
+  .then(data => {      
+      if(data.error === undefined){
+        let guides_list = document.getElementById('guides_list'); 
+        guides_list.style.display = '';
+        let tbody = document.getElementById('guides_tbody');
+        tbody.innerHTML = "";
+        guides = data;
+        data.forEach(function(item, i, data) {
+
+          let tr = document.createElement('tr');
+          tr.setAttribute('id', 'guide_tr_' + i);
+          tr.clasName = "guide_tr";          
+
+          let td_avatar = document.createElement('td');
+          td_avatar.innerHTML = '<img class="img-fluid" src="avatar.jpg">';
+          let td_fio = document.createElement('td');
+          td_fio.innerHTML = item.name;
+          let td_lang = document.createElement('td');
+          td_lang.innerHTML = item.language;
+          let td_exp = document.createElement('td');
+          td_exp.innerHTML = item.workExperience;
+          let td_price = document.createElement('td');
+          td_price.innerHTML = item.pricePerHour;
+          
+          let td_button = document.createElement('td');
+          td_button.dataset.id = i;
+          td_button.innerHTML = '<button class="btn btn-outline-primary btn-sm">Оформить заявку</button>';
+
+          td_button.addEventListener('click', click_guide_button, false);
+          //let td_empty2 = document.createElement('td');
+
+          tr.append(td_avatar);
+          tr.append(td_fio);
+          tr.append(td_lang);
+          tr.append(td_exp);
+          tr.append(td_price);
+          tr.append(td_button);
+          tbody.append(tr);
+          //console.log(item);
+        });
+        //pagination();
+      }
+      else{
+        console.log(data.error);
+      }
+  })
+  .catch(error => {
+      console.error(error);
+  });
+}
+
+//функция для кнопки выбора гида
+function click_guide_button(e){
+  e.preventDefault();
+  /*
+  let route_trs = document.getElementsByClassName("route_tr");
+  for (let i = 0; i < route_trs.length; i++) {
+    route_trs[i].className = "route_tr";
+  }
+  let id_route = this.getAttribute("data-id");
+  let tr_route = document.getElementById('route_tr_' + id_route);  
+
+  tr_route.className = "route_tr table-warning";
+
+  let server_id = this.getAttribute("data-server_id");
+  get_guides(server_id)
+  */
 }
 
 get_routes();
