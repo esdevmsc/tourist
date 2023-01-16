@@ -1,7 +1,16 @@
 let api_key = "159c16ba-5792-4509-b4bb-434c511cd601";
+
 let routes = {};
 let guides = {};
 let page = 1;
+
+let date = new Date();
+let time = "12:00";
+let duration = 1;
+let people = 1;
+let option = 0;
+let price = 0;
+
 //Функция получения списка маршрутов, выводим таблицу и запоминаем список (массив routes)
 function get_routes(){
   let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/routes";
@@ -167,6 +176,7 @@ function get_guides(route_id){
           let td_button = document.createElement('td');
           td_button.dataset.id = i;
           td_button.dataset.name = item.name;
+          td_button.dataset.price = item.pricePerHour;
           td_button.innerHTML = '<button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal">Оформить заявку</button>';
 
           td_button.addEventListener('click', click_guide_button, false);
@@ -201,10 +211,56 @@ function click_guide_button(e){
   let id_guide = this.getAttribute("data-id");
   let modal_guide_name = document.getElementById('modal_guide_name');
   modal_guide_name.innerHTML = this.getAttribute("data-name");
+  
+  price = this.getAttribute("data-price");
+
   let tr_guide = document.getElementById('guide_tr_' + id_guide);  
 
-  tr_guide.className = "guide_tr table-warning";
-  
+  tr_guide.className = "guide_tr table-warning";  
+  get_price();
 }
+//Расчет стоимости
+function get_price(){  
+  let modal_price = document.getElementById("modal_price");
+  console.log(date);
+  console.log(time);
+  console.log(duration);
+  console.log(people);
+  console.log(option);
+  console.log(price);
+  
+  let cost = (option == 1) ? Number(price) * Number(duration) * Number(people) * 1.5 : Number(price) * Number(duration) * Number(people);
+  modal_price.innerHTML = cost;//.toLocaleString;
+}
+//изменение даты
+let modal_date = document.getElementById("modal_date");
+modal_date.addEventListener('change', function(e){
+  console.log(this.value);
+});
+//изменение времени
+let modal_time = document.getElementById("modal_time");
+modal_time.addEventListener('change', function(e){
+  console.log(this.value);
+});
+//изменение продолжительности
+let modal_duration = document.getElementById("modal_duration");
+modal_duration.addEventListener('change', function(e){
+  duration = this.value;
+  get_price();
+});
+//изменение количества человек
+let modal_people = document.getElementById("modal_people");
+modal_people.addEventListener('change', function(e){
+  people = this.value;
+  get_price();
+});
+//изменение дополнительной опции
+let modal_option = document.getElementById("modal_option");
+modal_option.addEventListener('change', function(e){
+  console.log(this.checked);
+  option = this.checked;
+  get_price();
+});
+
 
 get_routes();
