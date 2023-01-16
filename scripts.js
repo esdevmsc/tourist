@@ -41,6 +41,7 @@ function get_routes(){
           let td_button = document.createElement('td');
           td_button.dataset.id = i;
           td_button.dataset.server_id = item.id;
+          td_button.dataset.name = item.name;
           td_button.innerHTML = '<button class="btn btn-outline-primary btn-sm">Выбрать</button>';
 
           td_button.addEventListener('click', click_route_button, false);
@@ -92,7 +93,6 @@ function pagination(){
     routes_nav_li.className = (page == j) ? "page-item pi_routes active" : "page-item pi_routes";
     routes_nav_li.innerHTML = '<a class="page-link" href="#">' + j + '</a>';
     pagination_block.append(routes_nav_li);
-
   }
   let routes_nav_li_last = document.createElement('li');
   routes_nav_li_last.dataset.id = (page == number_pages) ? number_pages : page + 1;
@@ -122,8 +122,13 @@ function click_route_button(e){
     route_trs[i].className = "route_tr";
   }
   let id_route = this.getAttribute("data-id");
-  let tr_route = document.getElementById('route_tr_' + id_route);  
+  let tr_route = document.getElementById('route_tr_' + id_route);
 
+  let route_name = document.getElementById('route_name');
+  let modal_route_name = document.getElementById('modal_route_name');
+
+  route_name.innerHTML = this.getAttribute("data-name");
+  modal_route_name.innerHTML = this.getAttribute("data-name");
   tr_route.className = "route_tr table-warning";
 
   let server_id = this.getAttribute("data-server_id");
@@ -161,10 +166,10 @@ function get_guides(route_id){
           
           let td_button = document.createElement('td');
           td_button.dataset.id = i;
-          td_button.innerHTML = '<button class="btn btn-outline-primary btn-sm">Оформить заявку</button>';
+          td_button.dataset.name = item.name;
+          td_button.innerHTML = '<button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal">Оформить заявку</button>';
 
           td_button.addEventListener('click', click_guide_button, false);
-          //let td_empty2 = document.createElement('td');
 
           tr.append(td_avatar);
           tr.append(td_fio);
@@ -175,7 +180,6 @@ function get_guides(route_id){
           tbody.append(tr);
           //console.log(item);
         });
-        //pagination();
       }
       else{
         console.log(data.error);
@@ -189,19 +193,18 @@ function get_guides(route_id){
 //функция для кнопки выбора гида
 function click_guide_button(e){
   e.preventDefault();
-  /*
-  let route_trs = document.getElementsByClassName("route_tr");
-  for (let i = 0; i < route_trs.length; i++) {
-    route_trs[i].className = "route_tr";
+  
+  let guide_trs = document.getElementsByClassName("guide_tr");
+  for (let i = 0; i < guide_trs.length; i++) {
+    guide_trs[i].className = "guide_tr";
   }
-  let id_route = this.getAttribute("data-id");
-  let tr_route = document.getElementById('route_tr_' + id_route);  
+  let id_guide = this.getAttribute("data-id");
+  let modal_guide_name = document.getElementById('modal_guide_name');
+  modal_guide_name.innerHTML = this.getAttribute("data-name");
+  let tr_guide = document.getElementById('guide_tr_' + id_guide);  
 
-  tr_route.className = "route_tr table-warning";
-
-  let server_id = this.getAttribute("data-server_id");
-  get_guides(server_id)
-  */
+  tr_guide.className = "guide_tr table-warning";
+  
 }
 
 get_routes();
