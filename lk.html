@@ -77,6 +77,59 @@
           </div>
         </div>
       </div>
+      <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editLabel">Редактирование заявки</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                  <p><b>ФИО гида: </b><span id="edit_guide_name"></span></p>
+                  <p><b>Название маршрута: </b><span id="edit_route_name"></span></p>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="edit_date" class="form-label">Дата экскурсии:</label>
+                    <input class="form-control" type="date" id="edit_date">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="edit_time" class="form-label">Время начала:</label>
+                    <input class="form-control" type="time" id="edit_time">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="edit_duration" class="form-label">Длительность экскурсии:</label>
+                    <select class="form-select" aria-label="Длительность экскурсии" id="edit_duration">
+                      <option value="1" selected>1 час</option>
+                      <option value="2">2 часа</option>
+                      <option value="3">3 часа</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">                  
+                    <label for="edit_people" class="form-label">Количество человек:</label>
+                    <input value="1" class="form-control" type="number" id="edit_people">
+                  </div>
+                </div>
+                <div class="row py-3">
+                  <div class="col-md-12">
+                  <input class="form-check-input" type="checkbox" value="1" id="edit_option">
+                  <label class="form-check-label" for="edit_option">Интерактивный путеводитель:</label>
+                </div>
+                </div>
+                <div class="row">
+                  <p><b>Итоговая стоимость: </b><span id="edit_price"></span> р.</p>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
+                <button type="button" id="modal_sub" class="btn btn-primary" data-bs-dismiss="modal">Сохранить</button>
+              </div>
+          </div>
+        </div>
+      </div>
     </main>    
     <footer>
       <div class="container py-3">

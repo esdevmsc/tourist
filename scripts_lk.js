@@ -153,7 +153,7 @@ function click_request_view(){
             document.getElementById("view_guide_name").innerHTML = data.name;
         }
         else{
-          console.log(data.error);
+            console.log(data.error);
         }
     })
     .catch(error => {
@@ -166,10 +166,10 @@ function click_request_view(){
     document.getElementById("view_duration").innerHTML = req.duration;
     document.getElementById("view_person").innerHTML = req.persons;
     if(req.optionFirst){
-      document.getElementById("view_option").innerHTML = "<b>Трансфер до ближайших станций метро после экскурсии</b>";
+        document.getElementById("view_option").innerHTML = "<b>Трансфер до ближайших станций метро после экскурсии</b>";
     }
     if(req.optionSecond){
-      document.getElementById("view_option").innerHTML = "<b>Интерактивный путеводитель</b>";
+        document.getElementById("view_option").innerHTML = "<b>Интерактивный путеводитель</b>";
     }
 
     document.getElementById("view_cost").innerHTML = req.price;
@@ -179,7 +179,34 @@ function click_request_view(){
 function click_request_edit(){
     let req_id = this.getAttribute("data-id");
     let req = requests[req_id];
-    console.log(req);
+    let guide_id = req.guide_id;
+    let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/guides/" + guide_id;
+    fetch(url + "?api_key=" + api_key)
+    .then(response => response.json())
+    .then(data => {
+        if(data.error === undefined){
+            document.getElementById("edit_guide_name").innerHTML = data.name;
+        }
+        else{
+          console.log(data.error);
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+    document.getElementById("edit_route_name").innerHTML = routes[req.route_id];
+    document.getElementById("edit_date").value = req.date;
+    document.getElementById("edit_time").value = req.time;
+    document.getElementById("edit_duration").value = req.duration;
+    document.getElementById("edit_people").value = req.persons;
+    if(req.optionFirst){
+      document.getElementById("edit_option").checked = true;
+    }
+    if(req.optionSecond){
+      document.getElementById("edit_option").checked = true;
+    }
+
+    document.getElementById("edit_price").innerHTML = req.price;
 }
 
 //функция для клика по кнопке удаления заявки
@@ -188,72 +215,5 @@ function click_request_delete(){
     let req = requests[req_id];
     console.log(req);
 }
-          /*
-//функция для кнопки выбора маршрута
-function click_route_button(e){
-  e.preventDefault();
-  let route_trs = document.getElementsByClassName("route_tr");
-  for (let i = 0; i < route_trs.length; i++) {
-    route_trs[i].className = "route_tr";
-  }
-  let id_route = this.getAttribute("data-id");
-  let tr_route = document.getElementById('route_tr_' + id_route);
-
-  let route_name = document.getElementById('route_name');
-  let modal_route_name = document.getElementById('modal_route_name');
-
-  route_name.innerHTML = this.getAttribute("data-name");
-  modal_route_name.innerHTML = this.getAttribute("data-name");
-  tr_route.className = "route_tr table-warning";
-
-  let server_id = this.getAttribute("data-server_id");
-  
-  route_id = server_id;
-  get_guides(server_id)
-}
-
-
-//отправка заявки
-let modal_sub = document.getElementById("modal_sub");
-modal_sub.addEventListener('click', function(e){
-  let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/orders";
-
-  let formData = new FormData();
-  formData.append('guide_id', guide_id);
-  formData.append('route_id', route_id);
-  formData.append('date', date);
-  formData.append('time', time);
-  formData.append('duration', duration);
-  formData.append('id', guide_id + route_id);
-  formData.append('optionFirst', option);
-  formData.append('optionSecond', 0);
-  formData.append('persons', people);
-  formData.append('price', price);
-  formData.append('student_id', 12345654321);
-
-  fetch(url + "?api_key=" + api_key, {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {      
-      if(data.error === undefined){
-         console.log(data);
-      }
-      else{
-        console.log(data.error);
-      }
-  })
-  .catch(error => {
-      console.error(error);
-  });
  
-  let alert = document.getElementById("alert");
-  alert.style.display = '';
-  //alert.style.display = 'none';
-  let message = document.getElementById("message");
-  message.innerHTML = "Заявка успешно отправлена";  
-  //window.scrollTo(0, 0);
-}); 
-*/
 get_routes();
