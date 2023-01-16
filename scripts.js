@@ -4,6 +4,9 @@ let routes = {};
 let guides = {};
 let page = 1;
 
+let guide_id = 0;
+let route_id = 0;
+
 let date = new Date();
 let time = "12:00";
 let duration = 1;
@@ -141,6 +144,8 @@ function click_route_button(e){
   tr_route.className = "route_tr table-warning";
 
   let server_id = this.getAttribute("data-server_id");
+  
+  route_id = server_id;
   get_guides(server_id)
 }
 
@@ -177,6 +182,7 @@ function get_guides(route_id){
           td_button.dataset.id = i;
           td_button.dataset.name = item.name;
           td_button.dataset.price = item.pricePerHour;
+          td_button.dataset.server_id = item.id;
           td_button.innerHTML = '<button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal">Оформить заявку</button>';
 
           td_button.addEventListener('click', click_guide_button, false);
@@ -216,18 +222,16 @@ function click_guide_button(e){
 
   let tr_guide = document.getElementById('guide_tr_' + id_guide);  
 
-  tr_guide.className = "guide_tr table-warning";  
+  tr_guide.className = "guide_tr table-warning";
+
+  let server_id = this.getAttribute("data-server_id");
+
+  guide_id = server_id;
   get_price();
 }
 //Расчет стоимости
 function get_price(){  
   let modal_price = document.getElementById("modal_price");
-  console.log(date);
-  console.log(time);
-  console.log(duration);
-  console.log(people);
-  console.log(option);
-  console.log(price);
   
   let cost = (option == 1) ? Number(price) * Number(duration) * Number(people) * 1.5 : Number(price) * Number(duration) * Number(people);
   modal_price.innerHTML = cost;//.toLocaleString;
@@ -235,12 +239,12 @@ function get_price(){
 //изменение даты
 let modal_date = document.getElementById("modal_date");
 modal_date.addEventListener('change', function(e){
-  console.log(this.value);
+  date = this.value;
 });
 //изменение времени
 let modal_time = document.getElementById("modal_time");
 modal_time.addEventListener('change', function(e){
-  console.log(this.value);
+  time = this.value;
 });
 //изменение продолжительности
 let modal_duration = document.getElementById("modal_duration");
@@ -256,21 +260,51 @@ modal_people.addEventListener('change', function(e){
 });
 //изменение дополнительной опции
 let modal_option = document.getElementById("modal_option");
-modal_option.addEventListener('change', function(e){
-  console.log(this.checked);
+modal_option.addEventListener('change', function(e){  
   option = this.checked;
   get_price();
 });
 //отправка заявки
 let modal_sub = document.getElementById("modal_sub");
-modal_sub.addEventListener('click', function(e){  
+modal_sub.addEventListener('click', function(e){
+  let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/orders";
+
+  let formData = new FormData();
+  formData.append('guide_id', guide_id);
+  formData.append('route_id', route_id);
+  formData.append('date', date);
+  formData.append('time', time);
+  formData.append('duration', duration);
+  formData.append('id', guide_id + route_id);
+  formData.append('optionFirst', option);
+  formData.append('optionSecond', 0);
+  formData.append('persons', people);
+  formData.append('price', price);
+  formData.append('student_id', 12345654321);
+
+  fetch(url + "?api_key=" + api_key, {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {      
+      if(data.error === undefined){
+         console.log(data);
+      }
+      else{
+        console.log(data.error);
+      }
+  })
+  .catch(error => {
+      console.error(error);
+  });
+ 
   let alert = document.getElementById("alert");
   alert.style.display = '';
   //alert.style.display = 'none';
   let message = document.getElementById("message");
   message.innerHTML = "Заявка успешно отправлена";  
   //window.scrollTo(0, 0);
-});
- 
+}); 
 
 get_routes();
