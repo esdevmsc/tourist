@@ -163,10 +163,11 @@ function get_guides(route_id){
         let tbody = document.getElementById('guides_tbody');
         tbody.innerHTML = "";
         guides = data;
+        let langs = [];
         data.forEach(function(item, i, data) {
 
           let tr = document.createElement('tr');
-          tr.setAttribute('id', 'guide_tr_' + i);
+          tr.setAttribute('id', 'guide_tr_' + item.id);
           tr.clasName = "guide_tr";          
 
           let td_avatar = document.createElement('td');
@@ -174,7 +175,10 @@ function get_guides(route_id){
           let td_fio = document.createElement('td');
           td_fio.innerHTML = item.name;
           let td_lang = document.createElement('td');
-          td_lang.innerHTML = item.language;
+          td_lang.innerHTML = item.language;          
+          if(langs.indexOf(item.language) == -1){
+            langs.push(item.language);
+          }
           let td_exp = document.createElement('td');
           td_exp.innerHTML = item.workExperience;
           let td_price = document.createElement('td');
@@ -198,6 +202,22 @@ function get_guides(route_id){
           tbody.append(tr);
           //console.log(item);
         });
+
+        let lang_select = document.getElementById('lang_select');
+        lang_select.addEventListener('change', change_lang, false);
+        lang_select.innerHTML = "";
+        let option_first = document.createElement('option');
+        option_first.innerHTML = "Язык экскурсии";
+        option_first.value = "";
+        lang_select.append(option_first);
+        
+        for (let i = 0; i < langs.length; i++) {
+          let option = document.createElement('option');
+          option.innerHTML = langs[i];
+          option.value = langs[i];
+          lang_select.append(option);
+        }        
+        
       }
       else{
         console.log(data.error);
@@ -308,5 +328,19 @@ modal_sub.addEventListener('click', function(e){
   message.innerHTML = "Заявка успешно отправлена";  
   //window.scrollTo(0, 0);
 }); 
+
+//функция фильтрации гидов по языку
+function change_lang(){
+  let lang = this.value;
+  for (let i = 0; i < guides.length; i++) {
+    let lang_tr = document.getElementById('guide_tr_' + guides[i].id);
+    if(lang == guides[i].language || lang == ""){
+      lang_tr.style.display = '';
+    }
+    else{
+      lang_tr.style.display = 'none';
+    }
+  }
+}
 
 get_routes();
