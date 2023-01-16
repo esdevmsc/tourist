@@ -11,8 +11,9 @@ let date = new Date();
 let time = "12:00";
 let duration = 1;
 let people = 1;
-let option = 0;
+let option = false;
 let price = 0;
+let cost = 0;
 
 //Функция получения списка маршрутов, выводим таблицу и запоминаем список (массив routes)
 function get_routes(){
@@ -76,13 +77,14 @@ function get_routes(){
       console.error(error);
   });
 }
+
 //функция пагинации для списка маршрутов
 function pagination(){
   let item_start = page * 10 - 9;
   let item_finish = page * 10;
   routes.forEach(function(item, i, routes) {
     let tr = document.getElementById('route_tr_' + i);
-    if(item_start <= i && i <= item_finish){
+    if(item_start <= (i+1) && (i+1) <= item_finish){
       tr.style.display = '';
     }
     else{
@@ -233,7 +235,7 @@ function click_guide_button(e){
 function get_price(){  
   let modal_price = document.getElementById("modal_price");
   
-  let cost = (option == 1) ? Number(price) * Number(duration) * Number(people) * 1.5 : Number(price) * Number(duration) * Number(people);
+  cost = (option === true) ? Number(price) * Number(duration) * Number(people) * 1.5 : Number(price) * Number(duration) * Number(people);
   modal_price.innerHTML = cost;//.toLocaleString;
 }
 //изменение даты
@@ -277,9 +279,9 @@ modal_sub.addEventListener('click', function(e){
   formData.append('duration', duration);
   formData.append('id', guide_id + route_id);
   formData.append('optionFirst', option);
-  formData.append('optionSecond', 0);
+  formData.append('optionSecond', false);
   formData.append('persons', people);
-  formData.append('price', price);
+  formData.append('price', cost);
   formData.append('student_id', 12345654321);
 
   fetch(url + "?api_key=" + api_key, {
