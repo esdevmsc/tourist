@@ -261,6 +261,16 @@ modal_option.addEventListener('change', function(e){
   option = this.checked;
   get_price();
 });
-
+//отправка заявки
+let modal_sub = document.getElementById("modal_sub");
+modal_sub.addEventListener('click', function(e){  
+  let alert = document.getElementById("alert");
+  alert.style.display = '';
+  //alert.style.display = 'none';
+  let message = document.getElementById("message");
+  message.innerHTML = "Заявка успешно отправлена";  
+  //window.scrollTo(0, 0);
+});
+ 
 
 get_routes();
