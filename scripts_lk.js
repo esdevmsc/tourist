@@ -141,10 +141,38 @@ function click_requests_pagination(e){
 }
 
 //функция для клика по кнопке просмотра заявки
-function click_request_view(){
+function click_request_view(){    
     let req_id = this.getAttribute("data-id");
     let req = requests[req_id];
-    console.log(req);
+    let guide_id = req.guide_id;
+    let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/guides/" + guide_id;
+    fetch(url + "?api_key=" + api_key)
+    .then(response => response.json())
+    .then(data => {
+        if(data.error === undefined){
+            document.getElementById("view_guide_name").innerHTML = data.name;
+        }
+        else{
+          console.log(data.error);
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+    document.getElementById("view_n").innerHTML = req.id;
+    document.getElementById("view_route_name").innerHTML = routes[req.route_id];
+    document.getElementById("view_date").innerHTML = req.date;
+    document.getElementById("view_time").innerHTML = req.time;
+    document.getElementById("view_duration").innerHTML = req.duration;
+    document.getElementById("view_person").innerHTML = req.persons;
+    if(req.optionFirst){
+      document.getElementById("view_option").innerHTML = "<b>Трансфер до ближайших станций метро после экскурсии</b>";
+    }
+    if(req.optionSecond){
+      document.getElementById("view_option").innerHTML = "<b>Интерактивный путеводитель</b>";
+    }
+
+    document.getElementById("view_cost").innerHTML = req.price;
 }
 
 //функция для клика по кнопке редактирования заявки
