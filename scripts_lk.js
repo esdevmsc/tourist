@@ -33,7 +33,8 @@ function get_requests(){
   .then(data => {      
       if(data.error === undefined){
         let tbody = document.getElementById('requests_tbody');        
-        
+        tbody.innerHTML = "";
+
         data.forEach(function(item, i, data) {
           requests[i] = item;
           let tr = document.createElement('tr');
@@ -216,5 +217,36 @@ function click_request_delete(){
     document.getElementById("delete_sub").dataset.id = req.id;
 }
 
+//функция удаления заявки
+document.getElementById("delete_sub").addEventListener('click', function(){
+  let id = this.getAttribute("data-id");
+  let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/orders/" + id;
+  fetch(url + "?api_key=" + api_key, {
+    method: 'DELETE'
+  })
+  .then(response => response.json())
+  .then(data => {
+      if(data.error === undefined){
+        get_requests();
+        message("Заявка успешно удалена");
+      }
+      else{
+        console.log(data.error);
+      }
+  })
+  .catch(error => {
+      console.error(error);
+  });
+});
+
+//функция показа сообщения о действии
+function message(text){
+  let alert = document.getElementById("alert");
+  alert.style.display = '';
+  //alert.style.display = 'none';
+  let message = document.getElementById("message");
+  message.innerHTML = text;  
+  //window.scrollTo(0, 0);
+}
 
 get_routes();
