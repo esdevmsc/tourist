@@ -1,7 +1,7 @@
 let api_key = "159c16ba-5792-4509-b4bb-434c511cd601";
 
-let routes = {};
-let requests = {};
+let routes = [];
+let requests = [];
 let page = 1;
 
 //Функция получения списка маршрутов (чтобы получить названия)
@@ -33,9 +33,9 @@ function get_requests(){
   .then(data => {      
       if(data.error === undefined){
         let tbody = document.getElementById('requests_tbody');        
-        requests = data;
         
         data.forEach(function(item, i, data) {
+          requests[i] = item;
           let tr = document.createElement('tr');
 
           tr.setAttribute('id', 'request_tr_' + i);
@@ -51,24 +51,31 @@ function get_requests(){
 
           let td_price = document.createElement('td');
           td_price.innerHTML = item.price + ' р.';
-          /*
-          let td_button = document.createElement('td');
-          td_button.dataset.id = i;
-          td_button.dataset.server_id = item.id;
-          td_button.dataset.name = item.name;
-          td_button.innerHTML = '<button class="btn btn-outline-primary btn-sm">Выбрать</button>';
 
-          td_button.addEventListener('click', click_route_button, false);
-*/
+          let td_buttons = document.createElement('td');
+          td_buttons.innerHTML = '<i class="bi bi-eye-fill req_view" data-id="' + i + '" data-bs-toggle="modal" data-bs-target="#view"></i><i class="bi bi-pencil-fill req_edit" style="margin: 0 5px;" data-id="' + i + '" data-bs-toggle="modal" data-bs-target="#edit"></i><i class="bi bi-trash-fill req_delete" data-id="' + i + '" data-bs-toggle="modal" data-bs-target="#delete"></i>';
+
           tr.append(td_n);
           tr.append(td_name_route);
           tr.append(td_date);
           tr.append(td_price);
+          tr.append(td_buttons);
 
-          tbody.append(tr);
-          
-          console.log(item);
+          tbody.append(tr);          
+          //console.log(item);
         });
+        let requests_view_for_click = document.getElementsByClassName("req_view");
+        for (let i = 0; i < requests_view_for_click.length; i++) {
+            requests_view_for_click[i].addEventListener('click', click_request_view, false);
+        }
+        let requests_edit_for_click = document.getElementsByClassName("req_edit");
+        for (let i = 0; i < requests_edit_for_click.length; i++) {
+            requests_edit_for_click[i].addEventListener('click', click_request_edit, false);
+        }
+        let requests_delete_for_click = document.getElementsByClassName("req_delete");
+        for (let i = 0; i < requests_delete_for_click.length; i++) {
+            requests_delete_for_click[i].addEventListener('click', click_request_delete, false);
+        }
         pagination();
       }
       else{
@@ -81,20 +88,20 @@ function get_requests(){
 }
 
 //функция пагинации для списка заявок
-function pagination(){
+function pagination(){    
   let item_start = page * 5 - 4;
   let item_finish = page * 5;
   let number_pages = Math.floor(requests.length/5) + 1;
 
-  requests.forEach(function(item, i, requests) {
+  for (let i = 0; i < requests.length; i++) {    
     let tr = document.getElementById('request_tr_' + i);
     if(item_start <= (i+1) && (i+1) <= item_finish){
       tr.style.display = '';
     }
     else{
       tr.style.display = 'none';
-    }    
-  });
+    }
+  }
 
   if(number_pages>1){
     let pagination_block = document.getElementById('requests_pagination');
@@ -132,7 +139,28 @@ function click_requests_pagination(e){
   page = Number(data_page);
   pagination();
 }
-/*
+
+//функция для клика по кнопке просмотра заявки
+function click_request_view(){
+    let req_id = this.getAttribute("data-id");
+    let req = requests[req_id];
+    console.log(req);
+}
+
+//функция для клика по кнопке редактирования заявки
+function click_request_edit(){
+    let req_id = this.getAttribute("data-id");
+    let req = requests[req_id];
+    console.log(req);
+}
+
+//функция для клика по кнопке удаления заявки
+function click_request_delete(){
+    let req_id = this.getAttribute("data-id");
+    let req = requests[req_id];
+    console.log(req);
+}
+          /*
 //функция для кнопки выбора маршрута
 function click_route_button(e){
   e.preventDefault();
