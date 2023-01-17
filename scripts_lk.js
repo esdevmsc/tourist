@@ -180,6 +180,8 @@ function click_request_view(){
 //функция для клика по кнопке редактирования заявки
 function click_request_edit(){
     let req_id = this.getAttribute("data-id");
+
+    document.getElementById("edit_sub").dataset.id = requests[req_id].id;
     let req = requests[req_id];
     let guide_id = req.guide_id;
     let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/guides/" + guide_id;
@@ -205,11 +207,71 @@ function click_request_edit(){
       document.getElementById("edit_option").checked = true;
     }
     if(req.optionSecond){
-      document.getElementById("edit_option").checked = true;
+      document.getElementById("edit_option2").checked = true;
     }
 
     document.getElementById("edit_price").innerHTML = req.price;
 }
+
+//функция сохранения заявки при редактировании
+document.getElementById("edit_sub").addEventListener('click', function(){
+  let req_id = this.getAttribute("data-id");
+  let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/orders/" + req_id;
+  console.log(req_id);
+  //console.log(url);
+  option =  document.getElementById("edit_option").checked ? 1 : 0;
+  option2 =  document.getElementById("edit_option2").checked ? 1 : 0;
+  let formData = new FormData();
+  
+  formData.append('date', document.getElementById("edit_date").value);
+  formData.append('time', document.getElementById("edit_time").value);
+  formData.append('duration', document.getElementById("edit_duration").value);
+
+  formData.append('optionFirst', option);
+  formData.append('optionSecond', option2);
+  formData.append('persons', document.getElementById("edit_people").value);
+  //formData.append('price', cost);
+
+  /*
+  let data = {
+    "date": document.getElementById("edit_date").value,
+    "time": document.getElementById("edit_time").value,
+    "duration": document.getElementById("edit_duration").value,
+    "optionFirst": option,
+    "optionSecond": option2,
+    "persons": document.getElementById("edit_people").value
+  };
+*/
+  fetch(url + "?api_key=" + api_key, {
+    method: 'PUT',
+    body: formData//JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {      
+      if(data.error === undefined){
+        console.log(data);
+        let alert = document.getElementById("alert");
+        alert.className = "row alert alert-warning";
+        let message = document.getElementById("message");
+        message.innerHTML = "Изменения успешно сохранены";  
+      }
+      else{
+        let alert = document.getElementById("alert");
+        alert.className = "row alert alert-warning";
+        let message = document.getElementById("message");
+        message.innerHTML = "Просизошла ошибка" + data.error;  
+        console.log(data.error);
+      }
+  })
+  .catch(error => {
+    let alert = document.getElementById("alert");
+    alert.className = "row alert alert-warning";
+    let message = document.getElementById("message");
+    message.innerHTML = "Просизошла ошибка" + error; 
+      console.error(error);
+  });
+
+});
 
 //функция для клика по кнопке удаления заявки
 function click_request_delete(){
