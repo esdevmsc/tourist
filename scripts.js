@@ -18,6 +18,8 @@ let option2 = false;
 let price = 0;
 let cost = 0;
 
+let guide_ot = 0;
+let guide_do = 100;
 let objects = [];
 
 //Функция получения списка маршрутов, выводим таблицу и запоминаем список (массив routes)
@@ -181,6 +183,8 @@ function click_route_button(e){
   let server_id = this.getAttribute("data-server_id");
   
   route_id = server_id;
+  guide_ot = 0;
+  guide_do = 100;
   get_guides(server_id)
 }
 
@@ -198,8 +202,8 @@ function get_guides(route_id){
         tbody.innerHTML = "";
         guides = data;
         let langs = [];
-        let guide_ot = 0;
-        let guide_do = 100;
+        guide_ot = 0;
+        guide_do = 100;
         data.forEach(function(item, i, data) {
 
           let tr = document.createElement('tr');
@@ -493,14 +497,36 @@ input_routes_search.addEventListener('input', function(e){
   else{    
     pagination(routes);
   }
-
-
 });
 
 //функция фильтрации гидов по опыту работы
 let guide_ot_input = document.getElementById("guide_ot");
-guide_ot_input.addEventListener('change', function(e){
-  guide_ot = this.value;
-  get_price();
+guide_ot_input.addEventListener('input', function(e){
+  guide_ot = Number(this.value);
+  for (let i = 0; i < guides.length; i++) {
+    let otdo_tr = document.getElementById('guide_tr_' + guides[i].id);
+    let we = Number(guides[i].workExperience);
+    if((guide_ot <= we) && (we <= guide_do)){
+      otdo_tr.style.display = '';
+    }
+    else{
+      otdo_tr.style.display = 'none';
+    }
+  }
 });
+let guide_do_input = document.getElementById("guide_do");
+guide_do_input.addEventListener('input', function(e){
+  guide_do = Number(this.value);
+  for (let i = 0; i < guides.length; i++) {
+    let otdo_tr = document.getElementById('guide_tr_' + guides[i].id);
+    let we = Number(guides[i].workExperience);
+    if((guide_ot <= we) && (we <= guide_do)){
+      otdo_tr.style.display = '';
+    }
+    else{
+      otdo_tr.style.display = 'none';
+    }
+  }
+});
+
 get_routes();
