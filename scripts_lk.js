@@ -4,6 +4,12 @@ let routes = [];
 let requests = [];
 let page = 1;
 
+let duration = 0;
+let persons = 0;
+let option =  false;
+let option2 =  false;
+let price = 0;
+let cost = 0;
 //Функция получения списка маршрутов (чтобы получить названия)
 function get_routes(){
     let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/routes";
@@ -189,6 +195,12 @@ function click_request_edit(){
     .then(response => response.json())
     .then(data => {
         if(data.error === undefined){
+            price = data.pricePerHour;
+            duration = document.getElementById("edit_duration").value;
+            persons = document.getElementById("edit_people").value;
+            option = document.getElementById("edit_option").checked;
+            option2 = document.getElementById("edit_option2").checked;
+            get_price();
             document.getElementById("edit_guide_name").innerHTML = data.name;
         }
         else{
@@ -213,62 +225,85 @@ function click_request_edit(){
     document.getElementById("edit_price").innerHTML = req.price;
 }
 
+//Расчет стоимости
+function get_price(){   
+  cost =  Number(price) * Number(duration) * Number(persons);  
+  if(option === true){
+    cost = cost * 1.3;
+  }
+  if(option2 === true){
+    cost = cost * 1.5;
+  }
+  cost = Math.floor(cost);
+  console.log(cost, price, duration, persons, option, option2);
+  document.getElementById("edit_price").innerHTML = cost;
+}
+
+//изменение продолжительности
+document.getElementById("edit_duration").addEventListener('change', function(e){
+  duration = this.value;
+  get_price();
+});
+
+//изменение количества участников
+document.getElementById("edit_people").addEventListener('change', function(e){
+  persons = this.value;
+  get_price();
+});
+
+//изменение дополнительной опции
+document.getElementById("edit_option").addEventListener('change', function(e){  
+  option = this.checked;
+  get_price();
+});
+
+//изменение второй дополнительной опции
+document.getElementById("edit_option2").addEventListener('change', function(e){  
+  option2 = this.checked;
+  get_price();
+});
+
 //функция сохранения заявки при редактировании
 document.getElementById("edit_sub").addEventListener('click', function(){
   let req_id = this.getAttribute("data-id");
   let url = "http://exam-2023-1-api.std-900.ist.mospolytech.ru/api/orders/" + req_id;
-  console.log(req_id);
-  //console.log(url);
-  option =  document.getElementById("edit_option").checked ? 1 : 0;
-  option2 =  document.getElementById("edit_option2").checked ? 1 : 0;
+
   let formData = new FormData();
-  
+
   formData.append('date', document.getElementById("edit_date").value);
   formData.append('time', document.getElementById("edit_time").value);
-  formData.append('duration', document.getElementById("edit_duration").value);
-
+  formData.append('duration', duration);
   formData.append('optionFirst', option);
   formData.append('optionSecond', option2);
-  formData.append('persons', document.getElementById("edit_people").value);
-  //formData.append('price', cost);
+  formData.append('persons', persons);
+  
+  formData.append('price', cost);
 
-  /*
-  let data = {
-    "date": document.getElementById("edit_date").value,
-    "time": document.getElementById("edit_time").value,
-    "duration": document.getElementById("edit_duration").value,
-    "optionFirst": option,
-    "optionSecond": option2,
-    "persons": document.getElementById("edit_people").value
-  };
-*/
   fetch(url + "?api_key=" + api_key, {
     method: 'PUT',
-    body: formData//JSON.stringify(data)
+    body: formData
   })
   .then(response => response.json())
   .then(data => {      
-      if(data.error === undefined){
-        console.log(data);
+      if(data.error === undefined){        
+        get_routes();
         let alert = document.getElementById("alert");
         alert.className = "row alert alert-warning";
         let message = document.getElementById("message");
-        message.innerHTML = "Изменения успешно сохранены";  
+        message.innerHTML = "Изменения успешно сохранены";
       }
       else{
         let alert = document.getElementById("alert");
         alert.className = "row alert alert-warning";
         let message = document.getElementById("message");
-        message.innerHTML = "Просизошла ошибка" + data.error;  
-        console.log(data.error);
+        message.innerHTML = "Просизошла ошибка" + data.error;          
       }
   })
   .catch(error => {
     let alert = document.getElementById("alert");
     alert.className = "row alert alert-warning";
     let message = document.getElementById("message");
-    message.innerHTML = "Просизошла ошибка" + error; 
-      console.error(error);
+    message.innerHTML = "Просизошла ошибка" + error;       
   });
 
 });
